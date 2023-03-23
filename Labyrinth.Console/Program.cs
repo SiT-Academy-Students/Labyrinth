@@ -10,11 +10,14 @@ Console.SetWindowSize(playgroundWidth, playgroundHeight);
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.CursorVisible = false;
 
+Console.SetCursorPosition(0, 3);
+Console.WriteLine("═╗");
+Console.WriteLine(" ║");
 // TODO: Center the playground:
 // Console.SetWindowPosition(10, 3);
 
-// 2. Render the main character.
-// 2.1. If cmd is used, our player should be rendered as a '*'. Else, use some unicode figure.
+// TODO: If cmd is used, our player should be rendered as a '*'. Else, use some unicode figure.
+// TODO: Extract the X and Y coordinates into a common structure/class.
 int playerX = 0, playerY = systemRows;
 RenderPlayer();
 
