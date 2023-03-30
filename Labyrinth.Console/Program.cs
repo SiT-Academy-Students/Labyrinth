@@ -1,6 +1,9 @@
 ﻿using Labyrinth.Console;
 using System;
+using System.Collections.Generic;
 using System.Text;
+
+Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
 
 // 1. Fix the game screen.
 // 1.1. Add check for the resolution of the screen. Or dynamicaly adjust the settings.
@@ -10,9 +13,6 @@ Console.SetWindowSize(playgroundWidth, playgroundHeight);
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.CursorVisible = false;
 
-Console.SetCursorPosition(0, 3);
-Console.WriteLine("═╗");
-Console.WriteLine(" ║");
 // TODO: Center the playground:
 // Console.SetWindowPosition(10, 3);
 
@@ -20,6 +20,17 @@ Console.WriteLine(" ║");
 // TODO: Extract the X and Y coordinates into a common structure/class.
 int playerX = 0, playerY = systemRows;
 RenderPlayer();
+
+Random random = new Random();
+for (int i = 0; i < 20; i++)
+{
+    int randomObstacleX = random.Next(0, playgroundWidth);
+    int randomObstacleY = random.Next(systemRows + 1, playgroundHeight);
+    ObstacleEdges randomObstacleEdges = (ObstacleEdges)random.Next(1, 16);
+    Obstacle currentObstacle = new Obstacle(randomObstacleX, randomObstacleY, randomObstacleEdges);
+
+    RenderObstacle(currentObstacle);
+}
 
 // 3. Move the character.
 ConsoleKeyInfo pressedKey = Console.ReadKey();
@@ -74,9 +85,40 @@ void RenderPlayer()
     Console.Write(sb.ToString());
 }
 
+void RenderObstacle(Obstacle obstacle)
+{
+    Console.SetCursorPosition(obstacle.X, obstacle.Y);
+    Console.Write(edgeSymbolsMap[obstacle.Edges]);
+}
+
 void PrintDebugInfo()
 {
     Console.WriteLine($"Largest Width: {Console.LargestWindowWidth}; Largest Height: {Console.LargestWindowHeight}");
     
     Console.WriteLine($"Buffer Width: {Console.BufferWidth}; Buffer Height: {Console.BufferHeight}");
+}
+
+static Dictionary<ObstacleEdges, char> ConstructObstacleEdgesMap()
+{
+    Dictionary<ObstacleEdges, char> edgeSymbolsMap = new Dictionary<ObstacleEdges, char>();
+    edgeSymbolsMap[ObstacleEdges.Top] = '║';
+    edgeSymbolsMap[ObstacleEdges.Bottom] = '║';
+    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Bottom] = '║';
+    edgeSymbolsMap[ObstacleEdges.Left] = '═';
+    edgeSymbolsMap[ObstacleEdges.Right] = '═';
+    edgeSymbolsMap[ObstacleEdges.Left | ObstacleEdges.Right] = '═';
+
+    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Right] = '╚';
+    edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Right] = '╔';
+    edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Left] = '╗';
+    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Left] = '╝';
+
+    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Right | ObstacleEdges.Bottom] = '╠';
+    edgeSymbolsMap[ObstacleEdges.Right | ObstacleEdges.Bottom | ObstacleEdges.Left] = '╦';
+    edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Left | ObstacleEdges.Top] = '╣';
+    edgeSymbolsMap[ObstacleEdges.Left | ObstacleEdges.Top | ObstacleEdges.Right] = '╩';
+
+    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Right | ObstacleEdges.Bottom | ObstacleEdges.Left] = '╬';
+
+    return edgeSymbolsMap;
 }
