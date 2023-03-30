@@ -69,6 +69,8 @@ void RenderPlayer()
     Console.SetCursorPosition(0, 0);
 
     StringBuilder sb = new StringBuilder(capacity: playgroundWidth);
+
+    // Comment
     sb.Append($"Player coordinates - x: {playerX}, y: {playerY}");
     sb.Append(new string(' ', playgroundWidth - sb.Length));
     Console.Write(sb.ToString());
