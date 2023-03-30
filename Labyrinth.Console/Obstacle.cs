@@ -2,12 +2,15 @@
 {
     public class Obstacle
     {
-        // Each obstacle must have a position - x, y
+        public Obstacle(int x, int y, ObstacleEdges edges)
+        {
+            X = x;
+            Y = y;
+            Edges = edges;
+        }
 
-        // Instead of four variables, use flag enumeration
-        bool HasTopEdge { get; set; }
-        bool HasRightEdge { get; set; }
-        bool HasBottomEdge { get; set; }
-        bool HasLeftEdge { get; set; }
+        public int X { get; }
+        public int Y { get; }
+        public ObstacleEdges Edges { get; }
     }
 }
