@@ -12,7 +12,7 @@ int playgroundWidth = Console.LargestWindowWidth - 20, playgroundHeight = Consol
 Console.SetWindowSize(playgroundWidth, playgroundHeight);
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.CursorVisible = false;
-
+Console.Title = "Labyrinth";
 // TODO: Center the playground:
 // Console.SetWindowPosition(10, 3);
 
