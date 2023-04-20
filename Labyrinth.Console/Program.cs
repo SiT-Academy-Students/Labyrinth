@@ -10,23 +10,17 @@ Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
 int playgroundWidth = Console.LargestWindowWidth - 20, playgroundHeight = Console.LargestWindowHeight - 6, systemRows = 1;
 
 Console.SetWindowSize(playgroundWidth, playgroundHeight);
-Console.OutputEncoding = System.Text.Encoding.UTF8;
+Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
-// TODO: Center the playground:
-// Console.SetWindowPosition(10, 3);
-
-// TODO: If cmd is used, our player should be rendered as a '*'. Else, use some unicode figure.
-// TODO: Extract the X and Y coordinates into a common structure/class.
 int playerX = 0, playerY = systemRows;
 RenderPlayer();
 
-Random random = new Random();
 for (int i = 0; i < 20; i++)
 {
-    int randomObstacleX = random.Next(0, playgroundWidth);
-    int randomObstacleY = random.Next(systemRows + 1, playgroundHeight);
-    ObstacleEdges randomObstacleEdges = (ObstacleEdges)random.Next(1, 16);
+    int randomObstacleX = RandomDataGenerator.NextInteger(0, playgroundWidth);
+    int randomObstacleY = RandomDataGenerator.NextInteger(systemRows + 1, playgroundHeight);
+    ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
     Obstacle currentObstacle = new Obstacle(randomObstacleX, randomObstacleY, randomObstacleEdges);
 
     RenderObstacle(currentObstacle);
