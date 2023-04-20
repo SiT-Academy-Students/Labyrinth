@@ -1,7 +1,6 @@
 ﻿using Labyrinth.Console;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Text;
 
 Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
@@ -11,14 +10,9 @@ Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
 int playgroundWidth = Console.LargestWindowWidth - 20, playgroundHeight = Console.LargestWindowHeight - 6, systemRows = 1;
 
 Console.SetWindowSize(playgroundWidth, playgroundHeight);
-Console.OutputEncoding = System.Text.Encoding.UTF8;
+Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
-// TODO: Center the playground:
-// Console.SetWindowPosition(10, 3);
-
-// TODO: If cmd is used, our player should be rendered as a '*'. Else, use some unicode figure.
-// TODO: Extract the X and Y coordinates into a common structure/class.
 int playerX = 0, playerY = systemRows;
 RenderPlayer();
 
