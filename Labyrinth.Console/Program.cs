@@ -1,6 +1,7 @@
 ﻿using Labyrinth.Console;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 
 Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
@@ -21,12 +22,11 @@ Console.CursorVisible = false;
 int playerX = 0, playerY = systemRows;
 RenderPlayer();
 
-Random random = new Random();
 for (int i = 0; i < 20; i++)
 {
-    int randomObstacleX = random.Next(0, playgroundWidth);
-    int randomObstacleY = random.Next(systemRows + 1, playgroundHeight);
-    ObstacleEdges randomObstacleEdges = (ObstacleEdges)random.Next(1, 16);
+    int randomObstacleX = RandomDataGenerator.NextInteger(0, playgroundWidth);
+    int randomObstacleY = RandomDataGenerator.NextInteger(systemRows + 1, playgroundHeight);
+    ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
     Obstacle currentObstacle = new Obstacle(randomObstacleX, randomObstacleY, randomObstacleEdges);
 
     RenderObstacle(currentObstacle);
