@@ -22,16 +22,15 @@ Console.CursorVisible = false;
 // TODO: If cmd is used, our player should be rendered as a '*'. Else, use some unicode figure.
 // TODO: Extract the X and Y coordinates into a common structure/class.
 Coordinates PlayerCoordinates = new Coordinates();
-PlayerCoordinates.PositionX = 0;
-PlayerCoordinates.PositionY = systemRows;
+PlayerCoordinates.X = 0;
+PlayerCoordinates.Y = systemRows;
 RenderPlayer();
 
-Random random = new Random();
 for (int i = 0; i < 20; i++)
 {
-    int randomObstacleX = random.Next(0, playgroundWidth);
-    int randomObstacleY = random.Next(systemRows + 1, playgroundHeight);
-    ObstacleEdges randomObstacleEdges = (ObstacleEdges)random.Next(1, 16);
+    int randomObstacleX = RandomDataGenerator.NextInteger(0, playgroundWidth);
+    int randomObstacleY = RandomDataGenerator.NextInteger(systemRows + 1, playgroundHeight);
+    ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
     Obstacle currentObstacle = new Obstacle(randomObstacleX, randomObstacleY, randomObstacleEdges);
 
     RenderObstacle(currentObstacle);
@@ -42,28 +41,28 @@ ConsoleKeyInfo pressedKey = Console.ReadKey();
 while (pressedKey.Key != ConsoleKey.Escape)
 {
     // 4. Configure this - ask the user for its preferrences.
-    if (pressedKey.Key == ConsoleKey.UpArrow && PlayerCoordinates.PositionY > systemRows)
+    if (pressedKey.Key == ConsoleKey.UpArrow && PlayerCoordinates.Y > systemRows)
     {
         ClearPlayer();
-        PlayerCoordinates.PositionY--;
+        PlayerCoordinates.Y--;
         RenderPlayer();
     }
-    else if (pressedKey.Key == ConsoleKey.RightArrow && PlayerCoordinates.PositionX + 1 < playgroundWidth)
+    else if (pressedKey.Key == ConsoleKey.RightArrow && PlayerCoordinates.X + 1 < playgroundWidth)
     {
         ClearPlayer();
-        PlayerCoordinates.PositionX++;
+        PlayerCoordinates.X++;
         RenderPlayer();
     }
-    else if (pressedKey.Key == ConsoleKey.DownArrow && PlayerCoordinates.PositionY + 1 < playgroundHeight)
+    else if (pressedKey.Key == ConsoleKey.DownArrow && PlayerCoordinates.Y + 1 < playgroundHeight)
     {
         ClearPlayer();
-        PlayerCoordinates.PositionY++;
+        PlayerCoordinates.Y++;
         RenderPlayer();
     }
-    else if (pressedKey.Key == ConsoleKey.LeftArrow && PlayerCoordinates.PositionX > 0)
+    else if (pressedKey.Key == ConsoleKey.LeftArrow && PlayerCoordinates.X > 0)
     {
         ClearPlayer();
-        PlayerCoordinates.PositionX--;
+        PlayerCoordinates.X--;
         RenderPlayer();
     }
 
@@ -73,26 +72,26 @@ while (pressedKey.Key != ConsoleKey.Escape)
 
 void ClearPlayer()
 {
-    Console.SetCursorPosition(PlayerCoordinates.PositionX, PlayerCoordinates.PositionY);
+    Console.SetCursorPosition(PlayerCoordinates.X, PlayerCoordinates.Y);
     Console.Write(' ');
 }
 
 void RenderPlayer()
 {
-    Console.SetCursorPosition(PlayerCoordinates.PositionX, PlayerCoordinates.PositionY);
+    Console.SetCursorPosition(PlayerCoordinates.X, PlayerCoordinates.Y);
     Console.Write(Constants.PlayerSymbol);
 
     Console.SetCursorPosition(0, 0);
 
     StringBuilder sb = new StringBuilder(capacity: playgroundWidth);
-    sb.Append($"Player coordinates - x: {PlayerCoordinates.PositionX}, y: {PlayerCoordinates.PositionY}");
+    sb.Append($"Player coordinates - x: {PlayerCoordinates.X}, y: {PlayerCoordinates.Y}");
     sb.Append(new string(' ', playgroundWidth - sb.Length));
     Console.Write(sb.ToString());
 }
 
 void RenderObstacle(Obstacle obstacle)
 {
-    Console.SetCursorPosition(obstacle.PositionX, obstacle.PositionY);
+    Console.SetCursorPosition(obstacle.X, obstacle.Y);
     Console.Write(edgeSymbolsMap[obstacle.Edges]);
 }
 

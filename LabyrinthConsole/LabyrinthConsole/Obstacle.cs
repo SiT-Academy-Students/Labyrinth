@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace LabyrinthConsole
 {
-    public class Obstacle : Coordinates
+    public class Obstacle
     {
         public Obstacle(int positionX, int positionY, ObstacleEdges edges)
         {
-            this.PositionX = positionX;
-            this.PositionY = positionY;
+            this.X = positionX;
+            this.Y = positionY;
             this.Edges = edges;
         }
-        public int PositionX { get; }
-        public int PositionY { get; }
+        public int X { get; }
+        public int Y { get; }
         public ObstacleEdges Edges { get; }
     }
 }

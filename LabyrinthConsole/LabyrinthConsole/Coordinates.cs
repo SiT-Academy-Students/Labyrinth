@@ -8,7 +8,7 @@ namespace LabyrinthConsole
 {
     public class Coordinates
     {
-        public int PositionX { get; set; }
-        public int PositionY { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }
