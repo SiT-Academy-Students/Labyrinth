@@ -7,7 +7,9 @@ Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
 
 // 1. Fix the game screen.
 // 1.1. Add check for the resolution of the screen. Or dynamicaly adjust the settings.
-int playgroundWidth = Console.LargestWindowWidth - 20, playgroundHeight = Console.LargestWindowHeight - 6, systemRows = 1;
+int playgroundWidth = Console.LargestWindowWidth - 20, playgroundHeight = Console.LargestWindowHeight - 6, systemRows = 3;
+bool mapEdit = false;
+
 
 Console.SetWindowSize(playgroundWidth, playgroundHeight);
 Console.OutputEncoding = Encoding.UTF8;
@@ -16,15 +18,19 @@ Console.CursorVisible = false;
 int playerX = 0, playerY = systemRows;
 RenderPlayer();
 
+/*
 for (int i = 0; i < 20; i++)
 {
     int randomObstacleX = RandomDataGenerator.NextInteger(0, playgroundWidth);
     int randomObstacleY = RandomDataGenerator.NextInteger(systemRows + 1, playgroundHeight);
     ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
     Obstacle currentObstacle = new Obstacle(randomObstacleX, randomObstacleY, randomObstacleEdges);
-
+     
     RenderObstacle(currentObstacle);
 }
+*/
+
+
 
 // 3. Move the character.
 ConsoleKeyInfo pressedKey = Console.ReadKey();
@@ -55,7 +61,17 @@ while (pressedKey.Key != ConsoleKey.Escape)
         playerX--;
         RenderPlayer();
     }
+    else if (pressedKey.Key == ConsoleKey.K)
+    {
+        mapEdit = !mapEdit;
+    }
+    else if (pressedKey.Key == ConsoleKey.Spacebar && mapEdit == true)
+    {
+        ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
+        Obstacle currentObstacle = new Obstacle(playerX+1, playerY, randomObstacleEdges);
 
+        RenderObstacle(currentObstacle);
+    }
 
     pressedKey = Console.ReadKey();
 }
