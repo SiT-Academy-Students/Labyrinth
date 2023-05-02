@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-Process currentProcess = Process.GetCurrentProcess();
-
 Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
 
 // 1. Fix the game screen.
@@ -16,11 +14,6 @@ Console.SetWindowSize(playgroundWidth, playgroundHeight);
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.CursorVisible = false;
 
-// TODO: Center the playground:
-// Console.SetWindowPosition(10, 3);
-
-// TODO: If cmd is used, our player should be rendered as a '*'. Else, use some unicode figure.
-// TODO: Extract the X and Y coordinates into a common structure/class.
 Coordinates PlayerCoordinates = new Coordinates();
 PlayerCoordinates.X = 0;
 PlayerCoordinates.Y = systemRows;
