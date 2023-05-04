@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labyrinth.Console", "Labyrinth.Console\Labyrinth.Console.csproj", "{22FBD9A0-022B-4139-99C8-D5E177432604}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Labyrinth.Console", "Labyrinth.Console\Labyrinth.Console.csproj", "{22FBD9A0-022B-4139-99C8-D5E177432604}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BD86C921-181C-4360-9667-C3DD141E6B77}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
