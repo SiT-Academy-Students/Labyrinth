@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LabyrinthConsole
 {
-    public class Coordinates
+    public struct Coordinates : IEquatable<Coordinates>
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int X { get; init; }
+        public int Y { get; init; }
+
+        public override bool Equals(object obj) => obj is Coordinates c && this.Equals(c);
+
+        public bool Equals(Coordinates other) => this.X == other.X && this.Y == other.Y;
+
+        public override int GetHashCode() => HashCode.Combine(this.X, this.Y);
+
+        public static bool operator ==(Coordinates left, Coordinates right) => EqualityComparer<Coordinates>.Default.Equals(left, right);
+
+        public static bool operator !=(Coordinates left, Coordinates right) => !(left == right);
     }
 }
