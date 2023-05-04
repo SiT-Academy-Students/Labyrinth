@@ -14,7 +14,6 @@ Console.SetWindowSize(playgroundWidth, playgroundHeight);
 Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
-
 Coordinates playerCoordinates = new Coordinates { X = 0, Y = systemRows };
 RenderPlayer();
 
@@ -23,7 +22,9 @@ for (int i = 0; i < 20; i++)
     int randomObstacleX = RandomDataGenerator.NextInteger(0, playgroundWidth);
     int randomObstacleY = RandomDataGenerator.NextInteger(systemRows + 1, playgroundHeight);
     ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
-    Obstacle currentObstacle = new Obstacle(randomObstacleX, randomObstacleY, randomObstacleEdges);
+
+    Coordinates currentObstacleCoordinates = new Coordinates { X = randomObstacleX, Y = randomObstacleY };
+    Obstacle currentObstacle = new Obstacle(currentObstacleCoordinates, randomObstacleEdges);
 
     RenderObstacle(currentObstacle);
 }
@@ -83,7 +84,7 @@ void RenderPlayer()
 
 void RenderObstacle(Obstacle obstacle)
 {
-    Console.SetCursorPosition(obstacle.X, obstacle.Y);
+    Console.SetCursorPosition(obstacle.Coordinates.X, obstacle.Coordinates.Y);
     Console.Write(edgeSymbolsMap[obstacle.Edges]);
 }
 
