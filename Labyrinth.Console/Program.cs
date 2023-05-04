@@ -30,7 +30,7 @@ for (int i = 0; i < 20; i++)
 }
 
 // 3. Move the character.
-ConsoleKeyInfo pressedKey = Console.ReadKey();
+ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);
 while (pressedKey.Key != ConsoleKey.Escape)
 {
     // 4. Configure this - ask the user for its preferrences.
@@ -60,7 +60,7 @@ while (pressedKey.Key != ConsoleKey.Escape)
     }
 
 
-    pressedKey = Console.ReadKey();
+    pressedKey = Console.ReadKey(intercept: true);
 }
 
 void ClearPlayer()
