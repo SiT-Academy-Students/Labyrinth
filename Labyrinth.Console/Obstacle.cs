@@ -1,16 +1,16 @@
-﻿namespace Labyrinth.Console
+﻿using LabyrinthConsole;
+
+namespace Labyrinth.Console
 {
     public class Obstacle
     {
-        public Obstacle(int x, int y, ObstacleEdges edges)
+        public Obstacle(Coordinates coordinates, ObstacleEdges edges)
         {
-            X = x;
-            Y = y;
-            Edges = edges;
+            this.Coordinates = coordinates;
+            this.Edges = edges;
         }
 
-        public int X { get; }
-        public int Y { get; }
+        public Coordinates Coordinates { get; }
         public ObstacleEdges Edges { get; }
     }
 }
