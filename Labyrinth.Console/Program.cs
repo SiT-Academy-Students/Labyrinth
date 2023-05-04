@@ -1,4 +1,5 @@
 ﻿using Labyrinth.Console;
+using LabyrinthConsole;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +14,8 @@ Console.SetWindowSize(playgroundWidth, playgroundHeight);
 Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
-int playerX = 0, playerY = systemRows;
+
+Coordinates playerCoordinates = new Coordinates { X = 0, Y = systemRows };
 RenderPlayer();
 
 for (int i = 0; i < 20; i++)
@@ -31,28 +33,28 @@ ConsoleKeyInfo pressedKey = Console.ReadKey();
 while (pressedKey.Key != ConsoleKey.Escape)
 {
     // 4. Configure this - ask the user for its preferrences.
-    if (pressedKey.Key == ConsoleKey.UpArrow && playerY > systemRows)
+    if (pressedKey.Key == ConsoleKey.UpArrow && playerCoordinates.Y > systemRows)
     {
         ClearPlayer();
-        playerY--;
+        playerCoordinates.Y--;
         RenderPlayer();
     }
-    else if (pressedKey.Key == ConsoleKey.RightArrow && playerX + 1 < playgroundWidth)
+    else if (pressedKey.Key == ConsoleKey.RightArrow && playerCoordinates.X + 1 < playgroundWidth)
     {
         ClearPlayer();
-        playerX++;
+        playerCoordinates.X++;
         RenderPlayer();
     }
-    else if (pressedKey.Key == ConsoleKey.DownArrow && playerY + 1 < playgroundHeight)
+    else if (pressedKey.Key == ConsoleKey.DownArrow && playerCoordinates.Y + 1 < playgroundHeight)
     {
         ClearPlayer();
-        playerY++;
+        playerCoordinates.Y++;
         RenderPlayer();
     }
-    else if (pressedKey.Key == ConsoleKey.LeftArrow && playerX > 0)
+    else if (pressedKey.Key == ConsoleKey.LeftArrow && playerCoordinates.X > 0)
     {
         ClearPlayer();
-        playerX--;
+        playerCoordinates.X--;
         RenderPlayer();
     }
 
@@ -62,19 +64,19 @@ while (pressedKey.Key != ConsoleKey.Escape)
 
 void ClearPlayer()
 {
-    Console.SetCursorPosition(playerX, playerY);
+    Console.SetCursorPosition(playerCoordinates.X, playerCoordinates.Y);
     Console.Write(' ');
 }
 
 void RenderPlayer()
 {
-    Console.SetCursorPosition(playerX, playerY);
+    Console.SetCursorPosition(playerCoordinates.X, playerCoordinates.Y);
     Console.Write(Constants.PlayerSymbol);
 
     Console.SetCursorPosition(0, 0);
 
     StringBuilder sb = new StringBuilder(capacity: playgroundWidth);
-    sb.Append($"Player coordinates - x: {playerX}, y: {playerY}");
+    sb.Append($"Player coordinates - x: {playerCoordinates.X}, y: {playerCoordinates.Y}");
     sb.Append(new string(' ', playgroundWidth - sb.Length));
     Console.Write(sb.ToString());
 }
