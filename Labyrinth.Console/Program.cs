@@ -37,25 +37,25 @@ while (pressedKey.Key != ConsoleKey.Escape)
     if (pressedKey.Key == ConsoleKey.UpArrow && playerCoordinates.Y > systemRows)
     {
         ClearPlayer();
-        playerCoordinates.Y--;
+        playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y - 1 };
         RenderPlayer();
     }
     else if (pressedKey.Key == ConsoleKey.RightArrow && playerCoordinates.X + 1 < playgroundWidth)
     {
         ClearPlayer();
-        playerCoordinates.X++;
+        playerCoordinates = playerCoordinates with { X = playerCoordinates.X + 1 };
         RenderPlayer();
     }
     else if (pressedKey.Key == ConsoleKey.DownArrow && playerCoordinates.Y + 1 < playgroundHeight)
     {
         ClearPlayer();
-        playerCoordinates.Y++;
+        playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y + 1 };
         RenderPlayer();
     }
     else if (pressedKey.Key == ConsoleKey.LeftArrow && playerCoordinates.X > 0)
     {
         ClearPlayer();
-        playerCoordinates.X--;
+        playerCoordinates = playerCoordinates with { X = playerCoordinates.X - 1 };
         RenderPlayer();
     }
 
@@ -91,7 +91,7 @@ void RenderObstacle(Obstacle obstacle)
 void PrintDebugInfo()
 {
     Console.WriteLine($"Largest Width: {Console.LargestWindowWidth}; Largest Height: {Console.LargestWindowHeight}");
-    
+
     Console.WriteLine($"Buffer Width: {Console.BufferWidth}; Buffer Height: {Console.BufferHeight}");
 }
 
