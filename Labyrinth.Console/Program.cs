@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 
 Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
+HashSet<Coordinates> BannedCoordinates = new HashSet<Coordinates>();
 
 // 1. Fix the game screen.
 // 1.1. Add check for the resolution of the screen. Or dynamicaly adjust the settings.
@@ -26,6 +27,8 @@ for (int i = 0; i < 20; i++)
     Coordinates currentObstacleCoordinates = new Coordinates { X = randomObstacleX, Y = randomObstacleY };
     Obstacle currentObstacle = new Obstacle(currentObstacleCoordinates, randomObstacleEdges);
 
+    BannedCoordinates.Add(currentObstacleCoordinates);
+
     RenderObstacle(currentObstacle);
 }
 
@@ -38,27 +41,58 @@ while (pressedKey.Key != ConsoleKey.Escape)
     {
         ClearPlayer();
         playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y - 1 };
-        RenderPlayer();
+        if(!BannedCoordinates.Contains(playerCoordinates))
+        {
+            RenderPlayer();
+        }
+        else
+        {
+            playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y + 1 };
+            RenderPlayer();
+        }
     }
     else if (pressedKey.Key == ConsoleKey.RightArrow && playerCoordinates.X + 1 < playgroundWidth)
     {
         ClearPlayer();
         playerCoordinates = playerCoordinates with { X = playerCoordinates.X + 1 };
-        RenderPlayer();
+        if(!BannedCoordinates.Contains(playerCoordinates))
+        {
+            RenderPlayer();
+        }
+        else
+        {
+            playerCoordinates = playerCoordinates with { X = playerCoordinates.X - 1 };
+            RenderPlayer();
+        }
     }
     else if (pressedKey.Key == ConsoleKey.DownArrow && playerCoordinates.Y + 1 < playgroundHeight)
     {
         ClearPlayer();
         playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y + 1 };
-        RenderPlayer();
+        if (!BannedCoordinates.Contains(playerCoordinates))
+        {
+            RenderPlayer();
+        }
+        else
+        {
+            playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y - 1 };
+            RenderPlayer();
+        }
     }
     else if (pressedKey.Key == ConsoleKey.LeftArrow && playerCoordinates.X > 0)
     {
         ClearPlayer();
         playerCoordinates = playerCoordinates with { X = playerCoordinates.X - 1 };
-        RenderPlayer();
+        if (!BannedCoordinates.Contains(playerCoordinates))
+        {
+            RenderPlayer();
+        }
+        else
+        {
+            playerCoordinates = playerCoordinates with { X = playerCoordinates.X + 1 };
+            RenderPlayer();
+        }
     }
-
 
     pressedKey = Console.ReadKey(intercept: true);
 }
@@ -104,7 +138,6 @@ static Dictionary<ObstacleEdges, char> ConstructObstacleEdgesMap()
     edgeSymbolsMap[ObstacleEdges.Left] = '═';
     edgeSymbolsMap[ObstacleEdges.Right] = '═';
     edgeSymbolsMap[ObstacleEdges.Left | ObstacleEdges.Right] = '═';
-
     edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Right] = '╚';
     edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Right] = '╔';
     edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Left] = '╗';
