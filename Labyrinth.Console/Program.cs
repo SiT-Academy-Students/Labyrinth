@@ -13,11 +13,13 @@ Console.SetWindowSize(playgroundWidth, playgroundHeight);
 Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
+var mapGen = new MapGenerator(obstaclesDict, edgeSymbolsMap);
+mapGen.GenerateMapBorders();
+
+// 3. Move the character.
 Coordinates playerCoordinates = new Coordinates { X = 0, Y = Constants.systemRows };
 RenderPlayer();
 
-
-// 3. Move the character.
 ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);
 while (pressedKey.Key != ConsoleKey.Escape)
 {
@@ -60,23 +62,6 @@ void RenderPlayer()
     sb.Append($"Player coordinates - x: {playerCoordinates.X}, y: {playerCoordinates.Y}");
     sb.Append(new string(' ', playgroundWidth - sb.Length));
     Console.Write(sb.ToString());
-}
-
-void RenderObstacle(Obstacle obstacle)
-{
-    //this could be implemented as an outside class to prevent repetitiveness
-    if (!obstaclesDict.ContainsKey(obstacle.Coordinates))
-    {
-        obstaclesDict[obstacle.Coordinates] = obstacle;
-    }
-    else
-    {
-        obstaclesDict.Remove(obstacle.Coordinates);
-        obstaclesDict[obstacle.Coordinates] = obstacle;
-    }
-
-    Console.SetCursorPosition(obstacle.Coordinates.X, obstacle.Coordinates.Y);
-    Console.Write(edgeSymbolsMap[obstacle.Edges]);
 }
 
 void PrintDebugInfo()

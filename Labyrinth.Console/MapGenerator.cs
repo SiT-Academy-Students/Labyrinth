@@ -11,35 +11,61 @@ namespace Labyrinth.Console
 {
     public class MapGenerator
     {
-        MapGenerator() { }
         private int leftBorder => 33;
-        private int rightBorder => System.Console.LargestWindowWidth - 20; //This should be able to be = to Console.LargestWindowWidth... 
-        private int topBorder => Constants.systemRows;
-        private int botBorder => System.Console.LargestWindowHeight - 6; //This should be able to be = to Console.LargestWindowHeight... 
+        private int rightBorder => System.Console.LargestWindowWidth - 20;
+        private int topBorder => Constants.systemRows - 1;
+        private int botBorder => System.Console.LargestWindowHeight - 6;
 
-        private int toptrue = 0;
-        private int bottrue = 0;
-        private int lefttrue = 0;
-        private int righttrue = 0;
+        private int toptrue;
+        private int bottrue;
+        private int lefttrue;
+        private int righttrue;
 
-
-        public Obstacle generateMapBorders(int i, int j)
+        public MapGenerator(Dictionary<Coordinates, Obstacle> obstaclesDict, Dictionary<ObstacleEdges, char> edgeSymbolsMap)
         {
-            
-            toptrue = 0;bottrue = 0;lefttrue = 0; righttrue = 0;
-            if (i - 1 <= rightBorder) righttrue = 2;
-            if (i + 1 >= leftBorder) lefttrue = 8;
-            if (j - 1 <= topBorder) toptrue = 1;
-            if (j + 1 >= botBorder) bottrue = 4;
-            int whatEdge = 0;
-            if(righttrue + lefttrue + toptrue + lefttrue > 0)
+            this._obstaclesDict = obstaclesDict;
+            this._edgeSymbolsMap = edgeSymbolsMap;
+        }
+
+        Dictionary<Coordinates, Obstacle> _obstaclesDict { get; }
+        Dictionary<ObstacleEdges, char> _edgeSymbolsMap { get; }
+
+        public void RenderObstacle(Obstacle obstacle)
+        {
+            if (!_obstaclesDict.ContainsKey(obstacle.Coordinates))
             {
-                ObstacleEdges ObstacleEdges = (ObstacleEdges)(whatEdge);
-                Coordinates ObstacleCoordinates = new Coordinates { X = i, Y = j };
-                Obstacle currentObstacle = new Obstacle(ObstacleCoordinates, ObstacleEdges);
-                return currentObstacle;
+                _obstaclesDict[obstacle.Coordinates] = obstacle;
             }
-            return null;
+            else
+            {
+                _obstaclesDict.Remove(obstacle.Coordinates);
+                _obstaclesDict[obstacle.Coordinates] = obstacle;
+            }
+            System.Console.SetCursorPosition(obstacle.Coordinates.X, obstacle.Coordinates.Y);
+            System.Console.Write(_edgeSymbolsMap[obstacle.Edges]);
+        }
+
+        public void GenerateMapBorders()
+        {
+            for (int x = leftBorder + 1; x < rightBorder; x++)
+            {
+                for (int y = topBorder; y < botBorder; y++)
+                {
+                    int whatEdges = 0;
+                    if (x + 1 == rightBorder) whatEdges += 4;
+                    if (x - 1 == leftBorder) whatEdges += 1;
+                    if (y - 1 == topBorder) whatEdges += 8;
+                    if (y + 1 == botBorder) whatEdges += 2;
+                    if (whatEdges > 0)
+                    {
+                        if(whatEdges == 9) whatEdges = 6;
+                        else if(whatEdges == 6) whatEdges = 9;
+                        Coordinates currentCoordi = new Coordinates() { X = x, Y = y };
+                        Obstacle currentObstacle = new Obstacle(currentCoordi, (ObstacleEdges)whatEdges);
+                        RenderObstacle(currentObstacle);
+                    }
+                }
+            }
         }
     }
 }
