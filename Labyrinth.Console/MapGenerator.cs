@@ -11,15 +11,10 @@ namespace Labyrinth.Console
 {
     public class MapGenerator
     {
-        private int leftBorder => 33;
-        private int rightBorder => System.Console.LargestWindowWidth - 20;
-        private int topBorder => Constants.systemRows - 1;
-        private int botBorder => System.Console.LargestWindowHeight - 6;
-
-        private int toptrue;
-        private int bottrue;
-        private int lefttrue;
-        private int righttrue;
+        private static int leftBorder => 33;
+        private static int rightBorder => System.Console.LargestWindowWidth - 20;
+        private static int topBorder => Constants.systemRows - 1;
+        private static int botBorder => System.Console.LargestWindowHeight - 6;
 
         public MapGenerator(Dictionary<Coordinates, Obstacle> obstaclesDict, Dictionary<ObstacleEdges, char> edgeSymbolsMap)
         {
@@ -53,9 +48,9 @@ namespace Labyrinth.Console
                 {
                     int whatEdges = 0;
                     if (x + 1 == rightBorder) whatEdges += 4;
-                    if (x - 1 == leftBorder) whatEdges += 1;
-                    if (y - 1 == topBorder) whatEdges += 8;
-                    if (y + 1 == botBorder) whatEdges += 2;
+                    else if (x - 1 == leftBorder) whatEdges += 1;
+                    else if (y - 1 == topBorder) whatEdges += 8;
+                    else if (y + 1 == botBorder) whatEdges += 2;
                     if (whatEdges > 0)
                     {
                         if(whatEdges == 9) whatEdges = 6;
