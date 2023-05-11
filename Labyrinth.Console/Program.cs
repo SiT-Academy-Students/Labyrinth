@@ -22,61 +22,25 @@ ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);
 while (pressedKey.Key != ConsoleKey.Escape)
 {
     // 4. Configure this - ask the user for its preferrences.
-    if (pressedKey.Key == ConsoleKey.UpArrow && playerCoordinates.Y > Constants.systemRows)
+    Coordinates newPlayerCoordinates;
+    if (pressedKey.Key == ConsoleKey.UpArrow)
+        newPlayerCoordinates = playerCoordinates with { Y = playerCoordinates.Y - 1 };
+    else if (pressedKey.Key == ConsoleKey.RightArrow)
+        newPlayerCoordinates = playerCoordinates with { X = playerCoordinates.X + 1 };
+    else if (pressedKey.Key == ConsoleKey.DownArrow)
+        newPlayerCoordinates = playerCoordinates with { Y = playerCoordinates.Y + 1 };
+    else if (pressedKey.Key == ConsoleKey.LeftArrow)
+        newPlayerCoordinates = playerCoordinates with { X = playerCoordinates.X - 1 };
+    else newPlayerCoordinates = playerCoordinates;
+
+    if (newPlayerCoordinates.X >= 0 && newPlayerCoordinates.Y >= Constants.systemRows && newPlayerCoordinates.X < playgroundWidth && newPlayerCoordinates.Y < playgroundHeight && !obstaclesDict.ContainsKey(newPlayerCoordinates))
     {
         ClearPlayer();
-        playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y - 1 };
-        if (obstacleCollisionIsPossible(obstaclesDict, playerCoordinates))
-        {
-            playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y + 1 };
-            RenderPlayer();
-        }
-        else RenderPlayer();
-    }
-    else if (pressedKey.Key == ConsoleKey.RightArrow && playerCoordinates.X + 1 < playgroundWidth)
-    {
-        ClearPlayer();
-        playerCoordinates = playerCoordinates with { X = playerCoordinates.X + 1 };
-        if (obstacleCollisionIsPossible(obstaclesDict, playerCoordinates))
-        {
-            playerCoordinates = playerCoordinates with { X = playerCoordinates.X - 1 };
-            RenderPlayer();
-        }
-        else RenderPlayer();
-    }
-    else if (pressedKey.Key == ConsoleKey.DownArrow && playerCoordinates.Y + 1 < playgroundHeight)
-    {
-        ClearPlayer();
-        playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y + 1 };
-        if (obstacleCollisionIsPossible(obstaclesDict, playerCoordinates))
-        {
-            playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y - 1 };
-            RenderPlayer();
-        }
-        else RenderPlayer();
-    }
-    else if (pressedKey.Key == ConsoleKey.LeftArrow && playerCoordinates.X > 0)
-    {
-        ClearPlayer();
-        playerCoordinates = playerCoordinates with { X = playerCoordinates.X - 1 };
-        if (obstacleCollisionIsPossible(obstaclesDict, playerCoordinates))
-        {
-            playerCoordinates = playerCoordinates with { X = playerCoordinates.X + 1 };
-            RenderPlayer();
-        }
-        else RenderPlayer();
+        playerCoordinates = newPlayerCoordinates;
+        RenderPlayer();
     }
 
     pressedKey = Console.ReadKey(intercept: true);
-}
-
-bool obstacleCollisionIsPossible(Dictionary<Coordinates, Obstacle> obstacle, Coordinates playerCoords)
-{
-    if (obstacle.ContainsKey(playerCoords))
-    {
-        return true;
-    }
-    return false;
 }
 
 void ClearPlayer()
