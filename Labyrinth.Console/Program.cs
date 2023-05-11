@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-
 Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
 Dictionary<Coordinates, Obstacle> obstaclesDict = new Dictionary<Coordinates, Obstacle>();
 
@@ -17,17 +16,6 @@ Console.CursorVisible = false;
 Coordinates playerCoordinates = new Coordinates { X = 0, Y = Constants.systemRows };
 RenderPlayer();
 
-for (int i = 0; i < 20; i++)
-{
-    int randomObstacleX = RandomDataGenerator.NextInteger(0, playgroundWidth);
-    int randomObstacleY = RandomDataGenerator.NextInteger(Constants.systemRows + 1, playgroundHeight);
-    ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
-
-    Coordinates currentObstacleCoordinates = new Coordinates { X = randomObstacleX, Y = randomObstacleY };
-    Obstacle currentObstacle = new Obstacle(currentObstacleCoordinates, randomObstacleEdges);
-
-    RenderObstacle(currentObstacle);
-}
 
 // 3. Move the character.
 ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);

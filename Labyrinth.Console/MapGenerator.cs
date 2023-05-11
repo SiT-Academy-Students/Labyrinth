@@ -11,10 +11,11 @@ namespace Labyrinth.Console
 {
     public class MapGenerator
     {
-        readonly private int leftBorder = 33;
-        readonly private int rightBorder = 220; //This should be able to be = to Console.LargestWindowWidth... 
-        readonly private int topBorder = Constants.systemRows;
-        readonly private int botBorder = 57; //This should be able to be = to Console.LargestWindowHeight... 
+        MapGenerator() { }
+        private int leftBorder => 33;
+        private int rightBorder => System.Console.LargestWindowWidth - 20; //This should be able to be = to Console.LargestWindowWidth... 
+        private int topBorder => Constants.systemRows;
+        private int botBorder => System.Console.LargestWindowHeight - 6; //This should be able to be = to Console.LargestWindowHeight... 
 
         private int toptrue = 0;
         private int bottrue = 0;
@@ -26,16 +27,19 @@ namespace Labyrinth.Console
         {
             
             toptrue = 0;bottrue = 0;lefttrue = 0; righttrue = 0;
-            if (i - 1 <= rightBorder) righttrue = 1;
-            if (i + 1 >= leftBorder) lefttrue = 1;
+            if (i - 1 <= rightBorder) righttrue = 2;
+            if (i + 1 >= leftBorder) lefttrue = 8;
             if (j - 1 <= topBorder) toptrue = 1;
-            if (j + 1 >= botBorder) bottrue = 1;
-
-            ObstacleEdges ObstacleEdges = (ObstacleEdges)(righttrue+lefttrue+toptrue+lefttrue);
-
-            Coordinates ObstacleCoordinates = new Coordinates { X = i, Y = j };
-            Obstacle currentObstacle = new Obstacle(ObstacleCoordinates, ObstacleEdges);
-            return currentObstacle;
+            if (j + 1 >= botBorder) bottrue = 4;
+            int whatEdge = 0;
+            if(righttrue + lefttrue + toptrue + lefttrue > 0)
+            {
+                ObstacleEdges ObstacleEdges = (ObstacleEdges)(whatEdge);
+                Coordinates ObstacleCoordinates = new Coordinates { X = i, Y = j };
+                Obstacle currentObstacle = new Obstacle(ObstacleCoordinates, ObstacleEdges);
+                return currentObstacle;
+            }
+            return null;
         }
     }
 }
