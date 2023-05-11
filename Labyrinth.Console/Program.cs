@@ -16,6 +16,7 @@ Console.CursorVisible = false;
 Coordinates playerCoordinates = new Coordinates { X = 0, Y = Constants.systemRows };
 RenderPlayer();
 
+/*
 for (int i = 0; i < 20; i++)
 {
     int randomObstacleX = RandomDataGenerator.NextInteger(0, playgroundWidth);
@@ -27,6 +28,9 @@ for (int i = 0; i < 20; i++)
 
     RenderObstacle(currentObstacle);
 }
+*/
+
+
 
 // 3. Move the character.
 ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);
@@ -77,6 +81,14 @@ while (pressedKey.Key != ConsoleKey.Escape)
         }
         else RenderPlayer();
     }
+    else if (pressedKey.Key == ConsoleKey.K)
+    {
+        mapEdit = !mapEdit;
+    }
+    else if (pressedKey.Key == ConsoleKey.Spacebar && mapEdit == true)
+    {
+        ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
+        Obstacle currentObstacle = new Obstacle(playerX+1, playerY, randomObstacleEdges);
 
     pressedKey = Console.ReadKey(intercept: true);
 }
