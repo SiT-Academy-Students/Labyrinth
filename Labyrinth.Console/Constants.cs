@@ -2,6 +2,6 @@
 {
     internal static class Constants
     {
-        public const char PlayerSymbol = '*';
+        public static readonly char PlayerSymbol = Icon.PlayerSymbol();
     }
 }
