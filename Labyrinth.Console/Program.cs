@@ -15,6 +15,7 @@ Console.CursorVisible = false;
 
 var mapGen = new MapGenerator(obstaclesDict, edgeSymbolsMap);
 mapGen.GenerateMapBorders();
+mapGen.GenerateRandomObstacles();
 
 // 3. Move the character.
 Coordinates playerCoordinates = new Coordinates { X = 0, Y = Constants.systemRows };

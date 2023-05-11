@@ -48,9 +48,9 @@ namespace Labyrinth.Console
                 {
                     int whatEdges = 0;
                     if (x + 1 == rightBorder) whatEdges += 4;
-                    else if (x - 1 == leftBorder) whatEdges += 1;
-                    else if (y - 1 == topBorder) whatEdges += 8;
-                    else if (y + 1 == botBorder) whatEdges += 2;
+                    if (x - 1 == leftBorder) whatEdges += 1;
+                    if (y - 1 == topBorder) whatEdges += 8;
+                    if (y + 1 == botBorder) whatEdges += 2;
                     if (whatEdges > 0)
                     {
                         if(whatEdges == 9) whatEdges = 6;
@@ -60,6 +60,21 @@ namespace Labyrinth.Console
                         RenderObstacle(currentObstacle);
                     }
                 }
+            }
+        }
+
+        public void GenerateRandomObstacles()
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                int randomObstacleX = RandomDataGenerator.NextInteger(leftBorder + 1, rightBorder - 1);
+                int randomObstacleY = RandomDataGenerator.NextInteger(Constants.systemRows + 1, botBorder - 1);
+                ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
+
+                Coordinates currentObstacleCoordinates = new Coordinates { X = randomObstacleX, Y = randomObstacleY };
+                Obstacle currentObstacle = new Obstacle(currentObstacleCoordinates, randomObstacleEdges);
+
+                RenderObstacle(currentObstacle);
             }
         }
     }
