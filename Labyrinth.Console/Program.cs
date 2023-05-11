@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+
 Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
 Dictionary<Coordinates, Obstacle> obstaclesDict = new Dictionary<Coordinates, Obstacle>();
 
@@ -16,7 +17,6 @@ Console.CursorVisible = false;
 Coordinates playerCoordinates = new Coordinates { X = 0, Y = Constants.systemRows };
 RenderPlayer();
 
-/*
 for (int i = 0; i < 20; i++)
 {
     int randomObstacleX = RandomDataGenerator.NextInteger(0, playgroundWidth);
@@ -28,9 +28,6 @@ for (int i = 0; i < 20; i++)
 
     RenderObstacle(currentObstacle);
 }
-*/
-
-
 
 // 3. Move the character.
 ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);
@@ -52,7 +49,7 @@ while (pressedKey.Key != ConsoleKey.Escape)
     {
         ClearPlayer();
         playerCoordinates = playerCoordinates with { X = playerCoordinates.X + 1 };
-        if(obstacleCollisionIsPossible(obstaclesDict, playerCoordinates))
+        if (obstacleCollisionIsPossible(obstaclesDict, playerCoordinates))
         {
             playerCoordinates = playerCoordinates with { X = playerCoordinates.X - 1 };
             RenderPlayer();
@@ -81,14 +78,6 @@ while (pressedKey.Key != ConsoleKey.Escape)
         }
         else RenderPlayer();
     }
-    else if (pressedKey.Key == ConsoleKey.K)
-    {
-        mapEdit = !mapEdit;
-    }
-    else if (pressedKey.Key == ConsoleKey.Spacebar && mapEdit == true)
-    {
-        ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
-        Obstacle currentObstacle = new Obstacle(playerX+1, playerY, randomObstacleEdges);
 
     pressedKey = Console.ReadKey(intercept: true);
 }
@@ -124,7 +113,7 @@ void RenderPlayer()
 void RenderObstacle(Obstacle obstacle)
 {
     //this could be implemented as an outside class to prevent repetitiveness
-    if(!obstaclesDict.ContainsKey(obstacle.Coordinates))
+    if (!obstaclesDict.ContainsKey(obstacle.Coordinates))
     {
         obstaclesDict[obstacle.Coordinates] = obstacle;
     }
@@ -133,7 +122,7 @@ void RenderObstacle(Obstacle obstacle)
         obstaclesDict.Remove(obstacle.Coordinates);
         obstaclesDict[obstacle.Coordinates] = obstacle;
     }
-    
+
     Console.SetCursorPosition(obstacle.Coordinates.X, obstacle.Coordinates.Y);
     Console.Write(edgeSymbolsMap[obstacle.Edges]);
 }
