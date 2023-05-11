@@ -1,33 +1,29 @@
 ﻿using Labyrinth.Console;
-using LabyrinthConsole;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
-HashSet<Coordinates> bannedCoordinates = new HashSet<Coordinates>();
+Dictionary<Coordinates, Obstacle> obstaclesDict = new Dictionary<Coordinates, Obstacle>();
 
 // 1. Fix the game screen.
 // 1.1. Add check for the resolution of the screen. Or dynamicaly adjust the settings.
-int playgroundWidth = Console.LargestWindowWidth - 20, playgroundHeight = Console.LargestWindowHeight - 6, systemRows = 1;
-
+int playgroundWidth = Console.LargestWindowWidth - 20, playgroundHeight = Console.LargestWindowHeight - 6;
 Console.SetWindowSize(playgroundWidth, playgroundHeight);
 Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
-Coordinates playerCoordinates = new Coordinates { X = 0, Y = systemRows };
+Coordinates playerCoordinates = new Coordinates { X = 0, Y = Constants.systemRows };
 RenderPlayer();
 
 for (int i = 0; i < 20; i++)
 {
     int randomObstacleX = RandomDataGenerator.NextInteger(0, playgroundWidth);
-    int randomObstacleY = RandomDataGenerator.NextInteger(systemRows + 1, playgroundHeight);
+    int randomObstacleY = RandomDataGenerator.NextInteger(Constants.systemRows + 1, playgroundHeight);
     ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
 
     Coordinates currentObstacleCoordinates = new Coordinates { X = randomObstacleX, Y = randomObstacleY };
     Obstacle currentObstacle = new Obstacle(currentObstacleCoordinates, randomObstacleEdges);
-
-    bannedCoordinates.Add(currentObstacleCoordinates);
 
     RenderObstacle(currentObstacle);
 }
@@ -37,11 +33,11 @@ ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);
 while (pressedKey.Key != ConsoleKey.Escape)
 {
     // 4. Configure this - ask the user for its preferrences.
-    if (pressedKey.Key == ConsoleKey.UpArrow && playerCoordinates.Y > systemRows)
+    if (pressedKey.Key == ConsoleKey.UpArrow && playerCoordinates.Y > Constants.systemRows)
     {
         ClearPlayer();
         playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y - 1 };
-        if (obstacleCollisionIsPossible(bannedCoordinates, playerCoordinates))
+        if (obstacleCollisionIsPossible(obstaclesDict, playerCoordinates))
         {
             playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y + 1 };
             RenderPlayer();
@@ -52,7 +48,7 @@ while (pressedKey.Key != ConsoleKey.Escape)
     {
         ClearPlayer();
         playerCoordinates = playerCoordinates with { X = playerCoordinates.X + 1 };
-        if(obstacleCollisionIsPossible(bannedCoordinates, playerCoordinates))
+        if(obstacleCollisionIsPossible(obstaclesDict, playerCoordinates))
         {
             playerCoordinates = playerCoordinates with { X = playerCoordinates.X - 1 };
             RenderPlayer();
@@ -63,7 +59,7 @@ while (pressedKey.Key != ConsoleKey.Escape)
     {
         ClearPlayer();
         playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y + 1 };
-        if (obstacleCollisionIsPossible(bannedCoordinates, playerCoordinates))
+        if (obstacleCollisionIsPossible(obstaclesDict, playerCoordinates))
         {
             playerCoordinates = playerCoordinates with { Y = playerCoordinates.Y - 1 };
             RenderPlayer();
@@ -74,7 +70,7 @@ while (pressedKey.Key != ConsoleKey.Escape)
     {
         ClearPlayer();
         playerCoordinates = playerCoordinates with { X = playerCoordinates.X - 1 };
-        if (obstacleCollisionIsPossible(bannedCoordinates, playerCoordinates))
+        if (obstacleCollisionIsPossible(obstaclesDict, playerCoordinates))
         {
             playerCoordinates = playerCoordinates with { X = playerCoordinates.X + 1 };
             RenderPlayer();
@@ -85,14 +81,15 @@ while (pressedKey.Key != ConsoleKey.Escape)
     pressedKey = Console.ReadKey(intercept: true);
 }
 
-bool obstacleCollisionIsPossible(HashSet<Coordinates> obstacleCoords, Coordinates playerCoords)
+bool obstacleCollisionIsPossible(Dictionary<Coordinates, Obstacle> obstacle, Coordinates playerCoords)
 {
-    if (obstacleCoords.Contains(playerCoords))
+    if (obstacle.ContainsKey(playerCoords))
     {
         return true;
     }
     return false;
 }
+
 void ClearPlayer()
 {
     Console.SetCursorPosition(playerCoordinates.X, playerCoordinates.Y);
@@ -114,6 +111,17 @@ void RenderPlayer()
 
 void RenderObstacle(Obstacle obstacle)
 {
+    //this could be implemented as an outside class to prevent repetitiveness
+    if(!obstaclesDict.ContainsKey(obstacle.Coordinates))
+    {
+        obstaclesDict[obstacle.Coordinates] = obstacle;
+    }
+    else
+    {
+        obstaclesDict.Remove(obstacle.Coordinates);
+        obstaclesDict[obstacle.Coordinates] = obstacle;
+    }
+    
     Console.SetCursorPosition(obstacle.Coordinates.X, obstacle.Coordinates.Y);
     Console.Write(edgeSymbolsMap[obstacle.Edges]);
 }
