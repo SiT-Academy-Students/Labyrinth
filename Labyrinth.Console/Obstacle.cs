@@ -1,4 +1,4 @@
-﻿using LabyrinthConsole;
+﻿using Labyrinth.Console;
 
 namespace Labyrinth.Console
 {
