@@ -37,25 +37,33 @@ ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);
 while (pressedKey.Key != ConsoleKey.Escape)
 {
     // 4. Configure this - ask the user for its preferrences.
-    Coordinates newPlayerCoordinates;
-    if (pressedKey.Key == ConsoleKey.UpArrow)
-        newPlayerCoordinates = playerCoordinates with { Y = playerCoordinates.Y - 1 };
-    else if (pressedKey.Key == ConsoleKey.RightArrow)
-        newPlayerCoordinates = playerCoordinates with { X = playerCoordinates.X + 1 };
-    else if (pressedKey.Key == ConsoleKey.DownArrow)
-        newPlayerCoordinates = playerCoordinates with { Y = playerCoordinates.Y + 1 };
-    else if (pressedKey.Key == ConsoleKey.LeftArrow)
-        newPlayerCoordinates = playerCoordinates with { X = playerCoordinates.X - 1 };
-    else newPlayerCoordinates = playerCoordinates;
 
+    Coordinates newPlayerCoordinates = calculateNewCoordinates(playerCoordinates, pressedKey); ;
     if (newPlayerCoordinates.X >= 0 && newPlayerCoordinates.Y >= systemRows && newPlayerCoordinates.X < playgroundWidth && newPlayerCoordinates.Y < playgroundHeight && !bannedCoordinates.Contains(newPlayerCoordinates))
     {
         ClearPlayer();
         playerCoordinates = newPlayerCoordinates;
         RenderPlayer();
     }
+    else newPlayerCoordinates = newPlayerCoordinates with { X = 0, Y = 0 };
 
     pressedKey = Console.ReadKey(intercept: true);
+}
+
+static Coordinates calculateNewCoordinates(Coordinates playerCoords, ConsoleKeyInfo key)
+{
+    Coordinates newCoords = new Coordinates();
+    if (key.Key == ConsoleKey.UpArrow)
+        newCoords = playerCoords with { Y = playerCoords.Y - 1 };
+    else if (key.Key == ConsoleKey.RightArrow)
+        newCoords = playerCoords with { X = playerCoords.X + 1 };
+    else if (key.Key == ConsoleKey.DownArrow)
+        newCoords = playerCoords with { Y = playerCoords.Y + 1 };
+    else if (key.Key == ConsoleKey.LeftArrow)
+        newCoords = playerCoords with { X = playerCoords.X - 1 };
+    else newCoords = playerCoords;
+
+    return newCoords;
 }
 
 void ClearPlayer()
