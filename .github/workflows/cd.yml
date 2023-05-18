@@ -24,12 +24,6 @@ jobs:
         with:
             dotnet-version: 7.x
 
-      - name: Restore dependencies
-        run: dotnet restore --runtime "${{ matrix.RUNTIME }}"
-
-      - name: Build the solution
-        run: dotnet build --no-restore --configuration "${{ env.CONFIGURATION }}" --runtime "${{ matrix.RUNTIME }}"
-
       - name: Publish
         run: dotnet publish "./Labyrinth.Console/Labyrinth.Console.csproj" --no-build --configuration "${{ env.CONFIGURATION }}" --runtime "${{ matrix.RUNTIME }}" --output "./artifacts/${{ matrix.RUNTIME }}"
 
