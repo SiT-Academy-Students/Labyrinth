@@ -1,11 +1,5 @@
-﻿using Labyrinth.Console;
-using System;
+﻿using Labyrinth.Console.Controllers;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace Labyrinth.Console
 {
@@ -16,28 +10,19 @@ namespace Labyrinth.Console
         private static int topBorder => Constants.systemRows - 1;
         private static int botBorder => System.Console.LargestWindowHeight - 6;
 
-        public MapGenerator(Dictionary<Coordinates, Obstacle> obstaclesDict, Dictionary<ObstacleEdges, char> edgeSymbolsMap)
+        public MapGenerator(Dictionary<Coordinates, Obstacle> obstaclesDict, IFlowController flowController)
         {
             this._obstaclesDict = obstaclesDict;
-            this._edgeSymbolsMap = edgeSymbolsMap;
+            this._flowController = flowController;
         }
 
-        Dictionary<Coordinates, Obstacle> _obstaclesDict { get; }
-        Dictionary<ObstacleEdges, char> _edgeSymbolsMap { get; }
+        private readonly Dictionary<Coordinates, Obstacle> _obstaclesDict;
+        private readonly IFlowController _flowController;
 
         public void RenderObstacle(Obstacle obstacle)
         {
-            if (!_obstaclesDict.ContainsKey(obstacle.Coordinates))
-            {
-                _obstaclesDict[obstacle.Coordinates] = obstacle;
-            }
-            else
-            {
-                _obstaclesDict.Remove(obstacle.Coordinates);
-                _obstaclesDict[obstacle.Coordinates] = obstacle;
-            }
-            System.Console.SetCursorPosition(obstacle.Coordinates.X, obstacle.Coordinates.Y);
-            System.Console.Write(_edgeSymbolsMap[obstacle.Edges]);
+            this._obstaclesDict[obstacle.Coordinates] = obstacle;
+            this._flowController.RenderObstacle(obstacle);
         }
 
         public void GenerateMapBorders()

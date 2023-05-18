@@ -1,9 +1,9 @@
 ﻿using Labyrinth.Console;
+using Labyrinth.Console.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
 Dictionary<Coordinates, Obstacle> obstaclesDict = new Dictionary<Coordinates, Obstacle>();
 
 // 1. Fix the game screen.
@@ -13,7 +13,9 @@ Console.SetWindowSize(playgroundWidth, playgroundHeight);
 Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
-var mapGen = new MapGenerator(obstaclesDict, edgeSymbolsMap);
+var flowController = new ConsoleFlowController();
+
+var mapGen = new MapGenerator(obstaclesDict, flowController);
 mapGen.GenerateMapBorders();
 mapGen.GenerateRandomObstacles();
 
@@ -70,28 +72,4 @@ void PrintDebugInfo()
     Console.WriteLine($"Largest Width: {Console.LargestWindowWidth}; Largest Height: {Console.LargestWindowHeight}");
 
     Console.WriteLine($"Buffer Width: {Console.BufferWidth}; Buffer Height: {Console.BufferHeight}");
-}
-
-static Dictionary<ObstacleEdges, char> ConstructObstacleEdgesMap()
-{
-    Dictionary<ObstacleEdges, char> edgeSymbolsMap = new Dictionary<ObstacleEdges, char>();
-    edgeSymbolsMap[ObstacleEdges.Top] = '║';
-    edgeSymbolsMap[ObstacleEdges.Bottom] = '║';
-    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Bottom] = '║';
-    edgeSymbolsMap[ObstacleEdges.Left] = '═';
-    edgeSymbolsMap[ObstacleEdges.Right] = '═';
-    edgeSymbolsMap[ObstacleEdges.Left | ObstacleEdges.Right] = '═';
-    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Right] = '╚';
-    edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Right] = '╔';
-    edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Left] = '╗';
-    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Left] = '╝';
-
-    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Right | ObstacleEdges.Bottom] = '╠';
-    edgeSymbolsMap[ObstacleEdges.Right | ObstacleEdges.Bottom | ObstacleEdges.Left] = '╦';
-    edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Left | ObstacleEdges.Top] = '╣';
-    edgeSymbolsMap[ObstacleEdges.Left | ObstacleEdges.Top | ObstacleEdges.Right] = '╩';
-
-    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Right | ObstacleEdges.Bottom | ObstacleEdges.Left] = '╬';
-
-    return edgeSymbolsMap;
 }
