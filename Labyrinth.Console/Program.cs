@@ -1,9 +1,9 @@
 ﻿using Labyrinth.Console;
+using Labyrinth.Console.Extensions;
 using LabyrinthConsole;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 
 Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
 HashSet<Coordinates> bannedCoordinates = new HashSet<Coordinates>();
@@ -11,18 +11,19 @@ HashSet<Coordinates> bannedCoordinates = new HashSet<Coordinates>();
 // 1. Fix the game screen.
 // 1.1. Add check for the resolution of the screen. Or dynamicaly adjust the settings.
 
-Playground playgroundParameters = new Playground();
-Console.SetWindowSize(playgroundParameters.Width, playgroundParameters.Height);
+Playground playground = new Playground { Width = Console.LargestWindowWidth - 20, Height = Console.LargestWindowHeight - 6, SystemRows = 1 };
+
+Console.SetWindowSize(playground.Width, playground.Height);
 Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
-Coordinates playerCoordinates = new Coordinates { X = 0, Y = playgroundParameters.SystemRows };
+Coordinates playerCoordinates = new Coordinates { X = 0, Y = playground.SystemRows };
 RenderPlayer();
 
 for (int i = 0; i < 20; i++)
 {
-    int randomObstacleX = RandomDataGenerator.NextInteger(0, playgroundParameters.Width);
-    int randomObstacleY = RandomDataGenerator.NextInteger(playgroundParameters.SystemRows + 1, playgroundParameters.Height);
+    int randomObstacleX = RandomDataGenerator.NextInteger(0, playground.Width);
+    int randomObstacleY = RandomDataGenerator.NextInteger(playground.SystemRows + 1, playground.Height);
     ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
 
     Coordinates currentObstacleCoordinates = new Coordinates { X = randomObstacleX, Y = randomObstacleY };
@@ -39,7 +40,7 @@ while (pressedKey.Key != ConsoleKey.Escape)
     // 3. Configure this - ask the user for its preferrences.
 
     Coordinates newPlayerCoordinates = playerCoordinates.CalculateNewCoordinates(pressedKey);
-    if (newPlayerCoordinates.IsWithinBorders(bannedCoordinates))
+    if (newPlayerCoordinates.IsWithinBorders(playground, bannedCoordinates))
     {
         ClearPlayer();
         playerCoordinates = newPlayerCoordinates;
@@ -61,9 +62,9 @@ void RenderPlayer()
 
     Console.SetCursorPosition(0, 0);
 
-    StringBuilder sb = new StringBuilder(capacity: playgroundParameters.Width);
+    StringBuilder sb = new StringBuilder(capacity: playground.Width);
     sb.Append($"Player coordinates - x: {playerCoordinates.X}, y: {playerCoordinates.Y}");
-    sb.Append(new string(' ', playgroundParameters.Width - sb.Length));
+    sb.Append(new string(' ', playground.Width - sb.Length));
     Console.Write(sb.ToString());
 }
 
