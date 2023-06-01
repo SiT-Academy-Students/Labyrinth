@@ -1,13 +1,11 @@
-﻿using Labyrinth.Console;
-
-namespace Labyrinth.Console
+﻿namespace Labyrinth.Console.Obstacles
 {
     public class Obstacle
     {
         public Obstacle(Coordinates coordinates, ObstacleEdges edges)
         {
-            this.Coordinates = coordinates;
-            this.Edges = edges;
+            Coordinates = coordinates;
+            Edges = edges;
         }
 
         public Coordinates Coordinates { get; }

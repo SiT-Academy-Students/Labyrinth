@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Labyrinth.Console
+namespace Labyrinth.Console.Obstacles
 {
     [Flags]
     public enum ObstacleEdges
