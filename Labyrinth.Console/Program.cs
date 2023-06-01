@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Labyrinth.Console.PlayerMovements;
+using Labyrinth.Console.Obstacles;
 
 Dictionary<Coordinates, Obstacle> obstaclesDict = new Dictionary<Coordinates, Obstacle>();
 
@@ -11,21 +13,26 @@ Dictionary<Coordinates, Obstacle> obstaclesDict = new Dictionary<Coordinates, Ob
 // 1.1. Add check for the resolution of the screen. Or dynamicaly adjust the settings.
 
 Playground playgroundParameters = new Playground();
-Console.SetWindowSize(playgroundParameters.Width, playgroundParameters.Height);
+Console.SetWindowSize(playgroundParameters.Width.X, playgroundParameters.Height.Y);
 Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
-Coordinates playerCoordinates = new Coordinates { X = 0, Y = playgroundParameters.SystemRows };
-RenderPlayer();
-
 var flowController = new ConsoleFlowController();
 
-Coordinates playerCoordinates = new Coordinates { X = 0, Y = playgroundParameters.SystemRows };
-RenderPlayer();
 
-var mapGen = new MapGenerator(obstaclesDict, flowController);
-mapGen.GenerateMapBorders();
-mapGen.GenerateRandomObstacles();
+//private int _leftBorder; //=> 33;
+//private int _rightBorder; //=> System.Console.LargestWindowWidth - 20;
+//private int _topBorder; //=> Playground.SystemRows - 1;
+//private int _botBorder; //=> System.Console.LargestWindowHeight - 6;
+
+var mapGenerator = new MapGenerator(obstaclesDict, flowController, Console.LargestWindowWidth - 21, 33, playgroundParameters.SystemRows.Y, Console.LargestWindowHeight - 7);
+mapGenerator.GenerateMapBorders();
+mapGenerator.GenerateRandomObstacles();
+
+
+
+Coordinates playerCoordinates = new Coordinates { X = 0, Y = playgroundParameters.SystemRows.Y };
+RenderPlayer();
 
 ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);
 while (pressedKey.Key != ConsoleKey.Escape)
@@ -33,13 +40,14 @@ while (pressedKey.Key != ConsoleKey.Escape)
     // 3. Configure this - ask the user for its preferrences.
 
     Coordinates newPlayerCoordinates = playerCoordinates.CalculateNewCoordinates(pressedKey);
-    if (newPlayerCoordinates.IsWithinBorders(bannedCoordinates))
+    if (newPlayerCoordinates.IsWithinBorders(obstaclesDict))
     {
         ClearPlayer();
         playerCoordinates = newPlayerCoordinates;
         RenderPlayer();
     }
     pressedKey = Console.ReadKey(intercept: true);
+    
 }
 
 void ClearPlayer()
@@ -55,9 +63,9 @@ void RenderPlayer()
 
     Console.SetCursorPosition(0, 0);
 
-    StringBuilder sb = new StringBuilder(capacity: playgroundParameters.Width);
+    StringBuilder sb = new StringBuilder(capacity: playgroundParameters.Width.X);
     sb.Append($"Player coordinates - x: {playerCoordinates.X}, y: {playerCoordinates.Y}");
-    sb.Append(new string(' ', playgroundParameters.Width - sb.Length));
+    sb.Append(new string(' ', playgroundParameters.Width.X - sb.Length));
     Console.Write(sb.ToString());
 }
 

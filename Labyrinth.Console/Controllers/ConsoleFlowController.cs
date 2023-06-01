@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Labyrinth.Console.Obstacles;
 
 namespace Labyrinth.Console.Controllers
 {
@@ -14,6 +15,11 @@ namespace Labyrinth.Console.Controllers
         {
             System.Console.SetCursorPosition(obstacle.Coordinates.X, obstacle.Coordinates.Y);
             System.Console.Write(_edgeSymbolsMap[obstacle.Edges]);
+        }
+        public void QuickObstacleGeneration(Coordinates currentCoordinates, ObstacleEdges currentEdges)
+        {
+            Obstacle currentObstacle = new Obstacle(currentCoordinates, currentEdges);
+            RenderObstacle(currentObstacle);
         }
 
         private static Dictionary<ObstacleEdges, char> ConstructObstacleEdgesMap()
