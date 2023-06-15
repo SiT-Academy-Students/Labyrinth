@@ -17,11 +17,11 @@ Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
 var flowController = new ConsoleFlowController();
-var mapGenerator = new MapGenerator(obstaclesDict, flowController, playground.Width - 1, 33, playground.SystemRows, playground.Height - 1);
+var mapGenerator = new MapGenerator(obstaclesDict, flowController, playground.Width, 0, playground.SystemRows, playground.Height);
 mapGenerator.GenerateMapBorders();
 mapGenerator.GenerateRandomObstacles();
 
-Coordinates playerCoordinates = new Coordinates { X = 0, Y = playground.SystemRows };
+Coordinates playerCoordinates = new Coordinates { X = 1, Y = playground.SystemRows + 1};
 RenderPlayer();
 
 ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);
