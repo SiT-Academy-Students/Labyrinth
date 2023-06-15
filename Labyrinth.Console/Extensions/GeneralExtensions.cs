@@ -22,7 +22,7 @@ namespace Labyrinth.Console.Extensions
             return newCoords;
         }
 
-        public static bool IsWithinBorders(this Coordinates coords, Playground playground, Dictionary<Coordinates, Obstacle> obstacles)
+        public static bool IsAvailable(this Coordinates coords, Playground playground, IDictionary<Coordinates, Obstacle> obstacles)
         {
             return coords.X >= 0 && coords.Y >= playground.SystemRows && coords.X < playground.Width && coords.Y < playground.Height && !obstacles.ContainsKey(coords);
         }

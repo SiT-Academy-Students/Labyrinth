@@ -1,59 +1,58 @@
 ﻿using Labyrinth.Console.Controllers;
 using Labyrinth.Console.Obstacles;
 using System.Collections.Generic;
-using System.Reflection.PortableExecutable;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Labyrinth.Console
 {
     public class MapGenerator
     {
-        public MapGenerator(Dictionary<Coordinates, Obstacle> obstaclesDict, IFlowController flowController, int rightBorder, int leftBorder, int topBorder, int botBorder)
+        public MapGenerator(Dictionary<Coordinates, Obstacle> obstaclesDict, IFlowController flowController, IPathFinder pathFinder, Playground playground)
         {
-            this._rightBorder = rightBorder;
-            this._leftBorder = leftBorder;
-            this._topBorder = topBorder;
-            this._botBorder = botBorder;
             this._obstaclesDict = obstaclesDict;
             this._flowController = flowController;
+            this._pathFinder = pathFinder;
+            this._playground = playground;
         }
 
         private readonly Dictionary<Coordinates, Obstacle> _obstaclesDict;
         private readonly IFlowController _flowController;
+        private readonly IPathFinder _pathFinder;
+        private readonly Playground _playground;
 
-        private readonly int _leftBorder;
-        private readonly int _rightBorder;
-        private readonly int _topBorder;
-        private readonly int _botBorder;
-
-        public void RenderObstacle(Coordinates coordinates, ObstacleEdges edges)
+        public void RenderObstacle(Coordinates coordinates, ObstacleEdges edges, bool checkIfPathExists = false)
         {
             Obstacle obstacle = new Obstacle(coordinates, edges);
             this._obstaclesDict[obstacle.Coordinates] = obstacle;
-            this._flowController.RenderObstacle(obstacle);
 
-            this.NormalizeEdges(coordinates);
+            if (checkIfPathExists && !this._pathFinder.SolutionExists(this._obstaclesDict))
+                this._obstaclesDict.Remove(obstacle.Coordinates);
+            else
+            {
+                this._flowController.RenderObstacle(obstacle);
+                this.NormalizeEdges(coordinates);
+            }
         }
 
         public void GenerateMapBorders()
         {
             ObstacleEdges edgesOrientX = ObstacleEdges.Right | ObstacleEdges.Left;
-            GenerateXAxisBorders(this._leftBorder, this._rightBorder, edgesOrientX);
+            GenerateXAxisBorders(this._playground.SystemColumns, this._playground.Width, edgesOrientX);
 
             ObstacleEdges edgesOrientY = ObstacleEdges.Top | ObstacleEdges.Bottom;
-            GenerateYAxisBorders(this._topBorder, this._botBorder, edgesOrientY);
+            GenerateYAxisBorders(this._playground.SystemRows, this._playground.Height, edgesOrientY);
         }
 
-        public void GenerateRandomObstacles()
+        public void GenerateRandomObstacles(int count)
         {
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < count; i++)
             {
-                int randomObstacleX = RandomDataGenerator.NextInteger(_leftBorder + 1, _rightBorder - 1);
-                int randomObstacleY = RandomDataGenerator.NextInteger(_topBorder + 1, _botBorder - 1);
-                ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
+                int randomObstacleX = RandomDataGenerator.NextInteger(this._playground.SystemColumns + 1, this._playground.Width - 1);
+                int randomObstacleY = RandomDataGenerator.NextInteger(this._playground.SystemRows + 1, this._playground.Height - 1);
 
                 Coordinates currentObstacleCoordinates = new Coordinates { X = randomObstacleX, Y = randomObstacleY };
-                RenderObstacle(currentObstacleCoordinates, randomObstacleEdges);
+                ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
+
+                RenderObstacle(currentObstacleCoordinates, randomObstacleEdges, checkIfPathExists: true);
             }
         }
 
@@ -82,10 +81,10 @@ namespace Labyrinth.Console
         {
             for (int startX = cycleStart; startX < cycleEnd; startX++)
             {
-                Coordinates top = new Coordinates { X = startX, Y = this._topBorder };
+                Coordinates top = new Coordinates { X = startX, Y = this._playground.SystemRows };
                 RenderObstacle(top, edgeOrientation);
 
-                Coordinates bot = new Coordinates { X = startX, Y = this._botBorder - 1 };
+                Coordinates bot = new Coordinates { X = startX, Y = this._playground.Height - 1 };
                 RenderObstacle(bot, edgeOrientation);
             }
         }
@@ -94,10 +93,10 @@ namespace Labyrinth.Console
         {
             for (int startY = cycleStart; startY < cycleEnd; startY++)
             {
-                Coordinates left = new Coordinates { X = this._leftBorder, Y = startY };
+                Coordinates left = new Coordinates { X = this._playground.SystemColumns, Y = startY };
                 RenderObstacle(left, edgeOrientation);
 
-                Coordinates right = new Coordinates { X = this._rightBorder - 1, Y = startY };
+                Coordinates right = new Coordinates { X = this._playground.Width - 1, Y = startY };
                 RenderObstacle(right, edgeOrientation);
             }
         }
