@@ -1,17 +1,14 @@
-﻿using Labyrinth.Console;
+﻿using Labyrinth.Console.Obstacles;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Labyrinth.Console.PlayerMovements
+namespace Labyrinth.Console.Extensions
 {
-    public static class CalculateCoords
+    public static class GeneralExtensions
     {
         public static Coordinates CalculateNewCoordinates(this Coordinates playerCoords, ConsoleKeyInfo key)
         {
-            Coordinates newCoords = new Coordinates();
+            Coordinates newCoords;
             if (key.Key == ConsoleKey.UpArrow)
                 newCoords = playerCoords with { Y = playerCoords.Y - 1 };
             else if (key.Key == ConsoleKey.RightArrow)
@@ -23,6 +20,11 @@ namespace Labyrinth.Console.PlayerMovements
             else newCoords = playerCoords;
 
             return newCoords;
+        }
+
+        public static bool IsWithinBorders(this Coordinates coords, Playground playground, Dictionary<Coordinates, Obstacle> obstacles)
+        {
+            return coords.X >= 0 && coords.Y >= playground.SystemRows && coords.X < playground.Width && coords.Y < playground.Height && !obstacles.ContainsKey(coords);
         }
     }
 }
