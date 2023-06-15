@@ -1,13 +1,14 @@
 ﻿using Labyrinth.Console.Extensions;
 using Labyrinth.Console.Obstacles;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Labyrinth.Console.Controllers
 {
     public class DfsPathFiner : IPathFinder
     {
         private static int[] _directionsX = new int[] { 1, 0, 0, -1 };
-        private static int[] _directionsY = new int[] { 0, -1, 1, 0 };
+        private static int[] _directionsY = new int[] { 0, 1, -1, 0 };
 
         private readonly Coordinates _start, _end;
         private readonly Playground _playground;
@@ -30,13 +31,15 @@ namespace Labyrinth.Console.Controllers
             if (current == this._end) return true;
 
             visited.Add(current);
-            for (int i = 0; i < 4; i++)
+            
+            bool hasPath = false;
+            for (int i = 0; i < 4 && !hasPath; i++)
             {
                 Coordinates nextCoordinates = new Coordinates { X = current.X + _directionsX[i], Y = current.Y + _directionsY[i] };
-                if (!visited.Contains(nextCoordinates) && nextCoordinates.IsAvailable(this._playground, obstaclesMap) && Dfs(nextCoordinates, obstaclesMap, visited)) return true;
+                hasPath = !visited.Contains(nextCoordinates) && nextCoordinates.IsAvailable(this._playground, obstaclesMap) && Dfs(nextCoordinates, obstaclesMap, visited);
             }
 
-            return false;
+            return hasPath;
         }
     }
 }

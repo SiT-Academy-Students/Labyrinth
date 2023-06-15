@@ -14,6 +14,8 @@ Playground playground = new Playground { Width = Console.LargestWindowWidth - 20
 Coordinates startCoordinates = new Coordinates { X = 1, Y = playground.SystemRows + 1 };
 Coordinates finishCoordinates = new Coordinates { X = playground.Width - 2, Y = playground.Height - 2 };
 
+int freeCells = (playground.Width - playground.SystemColumns - 2) * (playground.Height - playground.SystemRows - 2);
+
 Console.SetWindowSize(playground.Width, playground.Height);
 Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
@@ -22,7 +24,7 @@ var flowController = new ConsoleFlowController();
 var pathFinder = new DfsPathFiner(startCoordinates, finishCoordinates, playground);
 var mapGenerator = new MapGenerator(obstaclesDict, flowController, pathFinder, playground);
 mapGenerator.GenerateMapBorders();
-mapGenerator.GenerateRandomObstacles(10000);
+mapGenerator.GenerateRandomObstacles((int)Math.Floor(freeCells * Constants.HardThreshold));
 
 Coordinates playerCoordinates = startCoordinates;
 RenderPlayer();
