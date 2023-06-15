@@ -1,38 +1,34 @@
 ﻿using Labyrinth.Console;
+using Labyrinth.Console.Controllers;
 using Labyrinth.Console.Extensions;
-using LabyrinthConsole;
+using Labyrinth.Console.Obstacles;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-Dictionary<ObstacleEdges, char> edgeSymbolsMap = ConstructObstacleEdgesMap();
-HashSet<Coordinates> bannedCoordinates = new HashSet<Coordinates>();
+Dictionary<Coordinates, Obstacle> obstaclesDict = new Dictionary<Coordinates, Obstacle>();
 
 // 1. Fix the game screen.
 // 1.1. Add check for the resolution of the screen. Or dynamicaly adjust the settings.
+Playground playground = new Playground { Width = Console.LargestWindowWidth - 20, Height = Console.LargestWindowHeight - 6, SystemRows = 1, SystemColumns = 0 };
+Coordinates startCoordinates = new Coordinates { X = 1, Y = playground.SystemRows + 1 };
+Coordinates finishCoordinates = new Coordinates { X = playground.Width - 2, Y = playground.Height - 2 };
 
-Playground playground = new Playground { Width = Console.LargestWindowWidth - 20, Height = Console.LargestWindowHeight - 6, SystemRows = 1 };
+int freeCells = (playground.Width - playground.SystemColumns - 2) * (playground.Height - playground.SystemRows - 2);
 
 Console.SetWindowSize(playground.Width, playground.Height);
 Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
-Coordinates playerCoordinates = new Coordinates { X = 0, Y = playground.SystemRows };
+var flowController = new ConsoleFlowController();
+var pathFinder = new DfsPathFiner(startCoordinates, finishCoordinates, playground);
+var mapGenerator = new MapGenerator(obstaclesDict, flowController, pathFinder, playground);
+mapGenerator.GenerateMapBorders();
+mapGenerator.GenerateRandomObstacles((int)Math.Floor(freeCells * Constants.HardThreshold));
+
+Coordinates playerCoordinates = startCoordinates;
 RenderPlayer();
-
-for (int i = 0; i < 20; i++)
-{
-    int randomObstacleX = RandomDataGenerator.NextInteger(0, playground.Width);
-    int randomObstacleY = RandomDataGenerator.NextInteger(playground.SystemRows + 1, playground.Height);
-    ObstacleEdges randomObstacleEdges = (ObstacleEdges)RandomDataGenerator.NextInteger(1, 16);
-
-    Coordinates currentObstacleCoordinates = new Coordinates { X = randomObstacleX, Y = randomObstacleY };
-    Obstacle currentObstacle = new Obstacle(currentObstacleCoordinates, randomObstacleEdges);
-
-    bannedCoordinates.Add(currentObstacleCoordinates);
-
-    RenderObstacle(currentObstacle);
-}
+RenderFinish();
 
 ConsoleKeyInfo pressedKey = Console.ReadKey(intercept: true);
 while (pressedKey.Key != ConsoleKey.Escape)
@@ -40,13 +36,14 @@ while (pressedKey.Key != ConsoleKey.Escape)
     // 3. Configure this - ask the user for its preferrences.
 
     Coordinates newPlayerCoordinates = playerCoordinates.CalculateNewCoordinates(pressedKey);
-    if (newPlayerCoordinates.IsWithinBorders(playground, bannedCoordinates))
+    if (newPlayerCoordinates.IsAvailable(playground, obstaclesDict))
     {
         ClearPlayer();
         playerCoordinates = newPlayerCoordinates;
         RenderPlayer();
     }
     pressedKey = Console.ReadKey(intercept: true);
+
 }
 
 void ClearPlayer()
@@ -68,10 +65,11 @@ void RenderPlayer()
     Console.Write(sb.ToString());
 }
 
-void RenderObstacle(Obstacle obstacle)
+void RenderFinish()
 {
-    Console.SetCursorPosition(obstacle.Coordinates.X, obstacle.Coordinates.Y);
-    Console.Write(edgeSymbolsMap[obstacle.Edges]);
+    Console.SetCursorPosition(finishCoordinates.X, finishCoordinates.Y);
+    Console.Write(Constants.FinishSymbol);
+    Console.SetCursorPosition(0, 0);
 }
 
 void PrintDebugInfo()
@@ -79,28 +77,4 @@ void PrintDebugInfo()
     Console.WriteLine($"Largest Width: {Console.LargestWindowWidth}; Largest Height: {Console.LargestWindowHeight}");
 
     Console.WriteLine($"Buffer Width: {Console.BufferWidth}; Buffer Height: {Console.BufferHeight}");
-}
-
-static Dictionary<ObstacleEdges, char> ConstructObstacleEdgesMap()
-{
-    Dictionary<ObstacleEdges, char> edgeSymbolsMap = new Dictionary<ObstacleEdges, char>();
-    edgeSymbolsMap[ObstacleEdges.Top] = '║';
-    edgeSymbolsMap[ObstacleEdges.Bottom] = '║';
-    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Bottom] = '║';
-    edgeSymbolsMap[ObstacleEdges.Left] = '═';
-    edgeSymbolsMap[ObstacleEdges.Right] = '═';
-    edgeSymbolsMap[ObstacleEdges.Left | ObstacleEdges.Right] = '═';
-    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Right] = '╚';
-    edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Right] = '╔';
-    edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Left] = '╗';
-    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Left] = '╝';
-
-    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Right | ObstacleEdges.Bottom] = '╠';
-    edgeSymbolsMap[ObstacleEdges.Right | ObstacleEdges.Bottom | ObstacleEdges.Left] = '╦';
-    edgeSymbolsMap[ObstacleEdges.Bottom | ObstacleEdges.Left | ObstacleEdges.Top] = '╣';
-    edgeSymbolsMap[ObstacleEdges.Left | ObstacleEdges.Top | ObstacleEdges.Right] = '╩';
-
-    edgeSymbolsMap[ObstacleEdges.Top | ObstacleEdges.Right | ObstacleEdges.Bottom | ObstacleEdges.Left] = '╬';
-
-    return edgeSymbolsMap;
 }

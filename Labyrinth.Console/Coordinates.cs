@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LabyrinthConsole
+namespace Labyrinth.Console
 {
     public struct Coordinates : IEquatable<Coordinates>
     {

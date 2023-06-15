@@ -1,4 +1,4 @@
-﻿using LabyrinthConsole;
+﻿using Labyrinth.Console.Obstacles;
 using System;
 using System.Collections.Generic;
 
@@ -22,9 +22,9 @@ namespace Labyrinth.Console.Extensions
             return newCoords;
         }
 
-        public static bool IsWithinBorders(this Coordinates coords, Playground playground, HashSet<Coordinates> bannedCoords)
+        public static bool IsAvailable(this Coordinates coords, Playground playground, IDictionary<Coordinates, Obstacle> obstacles)
         {
-            return coords.X >= 0 && coords.Y >= playground.SystemRows && coords.X < playground.Width && coords.Y < playground.Height && !bannedCoords.Contains(coords);
+            return coords.X >= 0 && coords.Y >= playground.SystemRows && coords.X < playground.Width && coords.Y < playground.Height && !obstacles.ContainsKey(coords);
         }
     }
 }
