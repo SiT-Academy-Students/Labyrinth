@@ -8,9 +8,12 @@ namespace Labyrinth.Console.Controllers
         private static readonly Dictionary<ObstacleEdges, char> _edgeSymbolsMap = ConstructObstacleEdgesMap();
 
         public void RenderObstacle(Obstacle obstacle)
+            => this.Render(obstacle.Coordinates, _edgeSymbolsMap[obstacle.Edges]);
+
+        public void Render(Coordinates coordinates, char symbol)
         {
-            System.Console.SetCursorPosition(obstacle.Coordinates.X, obstacle.Coordinates.Y);
-            System.Console.Write(_edgeSymbolsMap[obstacle.Edges]);
+            System.Console.SetCursorPosition(coordinates.X, coordinates.Y);
+            System.Console.Write(symbol);
         }
 
         private static Dictionary<ObstacleEdges, char> ConstructObstacleEdgesMap()

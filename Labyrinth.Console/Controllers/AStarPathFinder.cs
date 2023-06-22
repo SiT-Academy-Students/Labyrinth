@@ -1,35 +1,23 @@
 ﻿using Labyrinth.Console.Extensions;
 using Labyrinth.Console.Obstacles;
-using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Labyrinth.Console.Controllers
 {
-    public class AStarPathFinder : IPathFinder
+    public class AStarPathFinder : BasePathFinder, IPathFinder
     {
-        private static int[] _directionsX = new int[] { 1, 0, 0, -1 };
-        private static int[] _directionsY = new int[] { 0, 1, -1, 0 };
-
-        private readonly Coordinates _start, _end;
-        private readonly Playground _playground;
-        private readonly bool _debug;
-
-        public AStarPathFinder(Coordinates start, Coordinates end, Playground playground, bool debug)
+        public AStarPathFinder(Coordinates start, Coordinates end, Playground playground, IFlowController flowController)
+            : base(start, end, playground, flowController)
         {
-            this._start = start;
-            this._end = end;
-            this._playground = playground;
-            this._debug = debug;
         }
 
-        public bool SolutionExists(IDictionary<Coordinates, Obstacle> obstaclesMap)
+        public override bool SolutionExists(IDictionary<Coordinates, Obstacle> obstaclesMap)
         {
             PriorityQueue<Coordinates, long> queue = new PriorityQueue<Coordinates, long>();
-            queue.Enqueue(this._start, 1);
+            queue.Enqueue(this.Start, 1);
 
             HashSet<Coordinates> visited = new HashSet<Coordinates>();
-            visited.Add(this._start);
+            visited.Add(this.Start);
 
             bool hasPath = false;
             while (queue.Count > 0)
@@ -38,47 +26,34 @@ namespace Labyrinth.Console.Controllers
 
                 for (int i = 0; i < 4; i++)
                 {
-                    Coordinates nextCoordinates = new Coordinates { X = current.X + _directionsX[i], Y = current.Y + _directionsY[i] };
+                    Coordinates nextCoordinates = new Coordinates { X = current.X + DirectionsX[i], Y = current.Y + DirectionsY[i] };
 
-                    if (!visited.Contains(nextCoordinates) && nextCoordinates.IsAvailable(this._playground, obstaclesMap))
+                    if (!visited.Contains(nextCoordinates) && nextCoordinates.IsAvailable(this.Playground, obstaclesMap))
                     {
                         queue.Enqueue(nextCoordinates, CalculateDistance(nextCoordinates));
                         visited.Add(nextCoordinates);
 
-                        if (this._debug)
-                        {
-                            System.Console.SetCursorPosition(nextCoordinates.X, nextCoordinates.Y);
-                            System.Console.Write('.');
-                        }
+                        this.PrintDebugInfo(nextCoordinates, '.');
 
-                        if (nextCoordinates == this._end)
+                        if (nextCoordinates == this.End)
                         {
                             hasPath = true;
                             break;
                         }
                     }
                 }
-                
+
                 if (hasPath) break;
             }
 
-            if (this._debug)
-            {
-                foreach (var coordinate in visited)
-                {
-                    System.Console.SetCursorPosition(coordinate.X, coordinate.Y);
-                    System.Console.Write(' ');
-                    Thread.Sleep(0);
-                }
-            }
-
+            this.ClearDebugInfo(visited);
             return hasPath;
         }
 
         private long CalculateDistance(Coordinates coordinate)
         {
-            long xDiff = coordinate.X - this._end.X;
-            long yDiff = coordinate.Y - this._end.Y;
+            long xDiff = coordinate.X - this.End.X;
+            long yDiff = coordinate.Y - this.End.Y;
 
             return xDiff * xDiff + yDiff * yDiff;
         }

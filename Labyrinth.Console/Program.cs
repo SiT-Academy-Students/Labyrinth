@@ -21,7 +21,7 @@ Console.OutputEncoding = Encoding.UTF8;
 Console.CursorVisible = false;
 
 var flowController = new ConsoleFlowController();
-var pathFinder = new AStarPathFinder(startCoordinates, finishCoordinates, playground, debug: true);
+var pathFinder = new AStarPathFinder(startCoordinates, finishCoordinates, playground, flowController);
 var mapGenerator = new MapGenerator(obstaclesDict, flowController, pathFinder, playground);
 mapGenerator.GenerateMapBorders();
 mapGenerator.GenerateRandomObstacles((int)Math.Floor(freeCells * Constants.HardThreshold));
